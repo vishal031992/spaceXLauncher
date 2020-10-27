@@ -1,0 +1,70 @@
+<div class="container-fluid">
+  <div>
+    <span style="font-weight: bold;font-size: 19px;
+  color: black;background-color: #f1f1f1;">{{title}}</span>
+    <span *ngIf="launcherDetail.length == 0" class="noRecordFound">{{noRecordFoundMessage}}</span>
+  </div>
+  <div class="row">
+    <div class="col-sm-2 responsive">
+      <div class="col-sm-11" style="background-color:#80808014;padding: 4px 26px;">
+        <p style="font-weight: bold;
+        color: black;margin-left: -20px;">{{filter}}</p>
+        <p style="color: black;margin-left: 20px;text-decoration: underline;text-decoration-color:#808080a8;font-size: 12px;margin-top: 8px;
+        margin-bottom: 4px;">{{yearLaunch}}
+        </p>
+        <span>
+          <a *ngFor="let year of launchYear" (click)="clickProgram(year)"
+            [ngStyle]="year.isActive==true?{'background-color':'#008000bd'} : {'background-color': 'rgb(0 128 0 / 23%)'}"
+            class="btn icon-btn btn-default launch_year">{{year.launch_Year}}</a>
+        </span>
+        <p style="margin-left: 6px;text-decoration: underline;text-decoration-color:#808080a8;font-size: 12px;margin-top: 8px;
+        margin-bottom: 4px;">
+          {{successfulLaunch}}</p>
+        <span>
+          <a (click)=successLaunchEvent(success) class="btn icon-btn btn-default launch_year"
+            *ngFor="let success of successLaunch"
+            [ngStyle]="success.isActive==true?{'background-color':'#008000bd'} : {'background-color': 'rgb(0 128 0 / 23%)'}">{{success.successLaunch}}</a>
+        </span>
+        <p style="margin-left: 6px;;text-decoration: underline;text-decoration-color:#808080a8;font-size: 12px;margin-top: 8px;
+        margin-bottom: 4px;">
+          {{successfulLanding}}</p>
+        <span>
+          <a (click)=successLandEvent(success) class="btn icon-btn btn-default launch_year"
+            [ngStyle]="success.isActive==true?{'background-color':'#008000bd'} : {'background-color': 'rgb(0 128 0 / 23%)'}"
+            *ngFor="let success of successLand">{{success.successLand}}</a>
+        </span>
+      </div>
+    </div>
+    <div class="col-sm-10 scroll">
+      <div class="col-sm-3" *ngFor="let list of launcherDetail" style="padding:8px">
+        <div class="card">
+          <img [src]="list.imageLink" class="image">
+          <div class="container">
+            <p class="missionNameAndFlightNumber">{{list.missionName}}#{{list.flightNumber}}</p>
+            <p class="missionId">Mission Id's</p>
+            <ul *ngFor="let id of list.missionId">
+              <li style="font-size: 11px;
+              color: #00008ba3;">{{id}}</li>
+            </ul>
+            <p class="launchDetail"><b>Launch Year: </b>
+              <n style=" color: #00008ba3;font-size: 11px;">{{list.launchYear}}</n>
+            </p>
+            <p class="launchDetail"> <b>Successful Launch: </b>
+              <n style=" color: #00008ba3;font-size: 11px;">{{list.launchSuccess}}</n>
+            </p>
+            <p class="launchDetail"><b>Successful Landing: </b>
+              <n style=" color: #00008ba3;font-size: 11px;">{{list.landSuccess}}</n>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="!isLoading" class="loader"></div>
+  </div>
+</div>
+<div>
+  <p style="text-align: center;
+    font-weight: bold;
+    font-size: 13px;
+    background-color: #f1f1f1;">Developed by: {{developerName}}</p>
+</div>
