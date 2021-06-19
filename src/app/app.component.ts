@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { ProgramFilter } from '../model/filter';
 import { SpaceXLaunchProgramService } from '../services/space-xlaunch-program.service';
 import { ToastrService } from 'ngx-toastr';
+// import { MatChipInputEvent } from '@angular/material';
+// import { ENTER, COMMA } from '@angular/cdk/keycodes';
 
 @Component({
   selector: 'app-root',
@@ -9,8 +11,16 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+  visible: boolean = true;
+  selectable: boolean = true;
+  removable: boolean = true;
+  addOnBlur: boolean = true;
+  openDialog: boolean = false;
+  public numberArray: any = [10, 32, 12, 13];
+  post_id: any;
 
-  // launchYear: any;
+
+  keywords = [];
   public programFilter: ProgramFilter;
 
   launchYear: Array<{ launch_Year: any, isActive: boolean }> = Array<{ launch_Year: string, isActive: boolean }>();
@@ -25,6 +35,8 @@ export class AppComponent {
   successfulLanding: string;
   noRecordFoundMessage: string;
   launcherDetail: Array<{ imageLink: any, flightNumber: any, missionName: any, missionId: any, launchYear: any, landSuccess: any, launchSuccess: any }> = Array<{ imageLink: any, flightNumber: any, missionName: any, missionId: any, launchYear: any, landSuccess: any, launchSuccess: any }>();
+  allImages: Array<{ Images: any, created_date: any, newsIcon: any, post_title: any, totalComment: any, totalLike: any; auto_id: any, post_image: any, post_thumb_image: any }> = Array<{ Images: any, created_date: any, newsIcon: any, post_title: any, totalComment: any, totalLike: any, auto_id: any, post_image: any, post_thumb_image: any }>();
+  allVideos: Array<{ post_image: any, post_thumb_image: any, created_date: any, commentMessage: any, post_title: any, submittedReportMessage: any,likedImage:any,reportingStatus:any,showReport:any }> = Array<{ post_image: any, post_thumb_image: any, created_date: any, commentMessage: any, post_title: any, submittedReportMessage: any,likedImage:any,reportingStatus:any,showReport:any }>();
 
   imageLink: any;
 
@@ -32,8 +44,11 @@ export class AppComponent {
     this.programFilter = new ProgramFilter
   }
   ngOnInit() {
+
     this.isLoading = false
     this.getAllSpaceXProgram();
+    this.GetAllPost();
+    // this.GetAllDetail();
 
   }
   getAllSpaceXProgram() {
@@ -320,4 +335,55 @@ export class AppComponent {
       }
     }
   }
+  GetAllPost() {
+    const post = {
+      "client_id": "CO-33",
+      "empcode": "2",
+      "device": "2",
+      "deviceId": "browser",
+      "app_version": "28",
+      "value": 0
+
+    }
+    this.service.GetAllPost(post).subscribe(res => {
+      const response = JSON.parse(JSON.stringify(res));
+      let data = response.data;
+
+      data.forEach(element => {
+        this.allImages.push({ Images: element.Images, created_date: element.created_date, newsIcon: element.newsIcon, post_title: element.post_title, totalComment: element.totalComment, totalLike: element.totalLike, auto_id: element.auto_id, post_image: element.Images_orig[0].post_image, post_thumb_image: element.Images_orig[0].post_thumb_image })
+      });
+      this.title = response.title
+    });
+  }
+  GetAllDetail() {
+    this.allVideos = [];
+    const detail = {
+      "client_id": "CO-33",
+      "employee_id": "2",
+      "device": "2",
+      "device_id": "browser",
+      "app_version": "28",
+      "post_id": this.post_id,
+      "newsType": "1"
+
+    }
+    this.service.GetAllDetail(detail).subscribe(res => {
+      const response = JSON.parse(JSON.stringify(res));
+      let data = response.data;
+      this.openDialog = true
+
+      // data.forEach(element => {
+      this.allVideos.push({ post_image: data.Images[0].post_image, post_thumb_image: data.Images[0].post_thumb_image, created_date: data.Images[0].created_date, commentMessage: data.commentMessage, post_title: data.post_title, submittedReportMessage: data.submittedReportMessage ,likedImage:data.likedImage,reportingStatus:data.reportingStatus,showReport:data.showReport})
+      // });
+    });
+  }
+  open(data) {
+    this.post_id = data.auto_id
+    this.GetAllDetail()
+    // console.log(data);
+
+    // this.openDialog = true;
+  }
+
 }
+
